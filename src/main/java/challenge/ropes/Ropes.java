@@ -9,8 +9,7 @@ public class Ropes {
 
   public int minCost(int[] ropes) {
 
-    List<Integer> list = Arrays.stream(ropes).boxed().collect(Collectors.toList());
-    PriorityQueue<Integer> minHeap = new PriorityQueue<>(list);
+    PriorityQueue<Integer> minHeap = Arrays.stream(ropes).boxed().collect(Collectors.toCollection(PriorityQueue::new));
 
     int rope = minHeap.remove();
     int cost = 0;
