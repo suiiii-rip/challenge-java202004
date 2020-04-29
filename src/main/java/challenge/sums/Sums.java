@@ -18,22 +18,16 @@ public class Sums {
       sortedNumbers.add(new IndexedNumber(i, numbers[i]));
     }
 
-    for (IndexedNumber in : sortedNumbers) {
-      int targetNumber = target - in.number - CONSTANT;
-
-      for (IndexedNumber inn : sortedNumbers.tailSet(in)) {
-        if (inn != in) {
-          if (targetNumber == inn.number) {
-            return new int[] { Math.min(in.index, inn.index), Math.max(in.index, inn.index) };
-          } else if (inn.number < targetNumber) {
-            break;
-          }
-        }
-      }
-    }
-
-
-    return new int[0];
+    return sortedNumbers.stream()
+      .flatMap(in -> {
+        int targetNumber = target - in.number - CONSTANT;
+        return sortedNumbers.tailSet(in).stream()
+          .filter(inn -> inn != in)
+          .filter(inn -> targetNumber == inn.number)
+          .map(inn -> new int[] { Math.min(in.index, inn.index), Math.max(in.index, inn.index) });
+      })
+      .findFirst()
+      .orElseGet(() -> new int[0]);
   }
 
   private static final class IndexedNumber {
