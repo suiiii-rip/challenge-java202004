@@ -12,21 +12,31 @@ public class TreasureIsland {
 
     final int height = grid.length - 1;
     final int width = grid[0].length - 1;
+    Map<Point, Integer> visited = new HashMap<>();
 
     class NextStep {
-      public int go(Point p, Set<Point> visited) {
-        if (visited.contains(p) || peek(p) == BLOCKED) {
+      public int go(Point p, Set<Point> path) {
+        if (visited.containsKey(p)) {
+          return visited.get(p);
+        }
+
+        if (peek(p) == BLOCKED) {
+          visited.put(p, Integer.MAX_VALUE);
           return Integer.MAX_VALUE;
         }
 
         if (peek(p) == TREASURE) {
-          return visited.size() + 1;
+          int result = path.size();
+          visited.put(p, result);
+          return result;
         }
 
-        HashSet<Point> updated = new HashSet<>(visited);
+        HashSet<Point> updated = new HashSet<>(path);
         updated.add(p);
 
         PriorityQueue<Integer> results = new PriorityQueue<>();
+
+        visited.put(p, Integer.MAX_VALUE);
 
         // left
         results.add(go(new Point(p.x, Math.max(0, p.y - 1)), updated));
@@ -40,7 +50,9 @@ public class TreasureIsland {
         // up
         results.add(go(new Point(Math.max(0, p.x - 1), p.y), updated));
 
-        return results.peek();
+        int result = results.peek();
+        visited.put(p, result);
+        return result;
       }
 
       private char peek(Point p) {
@@ -51,7 +63,7 @@ public class TreasureIsland {
     int result = new NextStep().go(new Point(0, 0), Collections.emptySet());
 
 
-    return result == Integer.MAX_VALUE ? 0 : result - 1;
+    return result == Integer.MAX_VALUE ? 0 : result;
   }
 
 
@@ -76,6 +88,14 @@ public class TreasureIsland {
     @Override
     public int hashCode() {
       return Objects.hash(x, y);
+    }
+
+    @Override
+    public String toString() {
+      return "Point{" +
+        "x=" + x +
+        ", y=" + y +
+        '}';
     }
   }
 
