@@ -28,3 +28,5 @@ Your algorithm should run in O(n) time and uses constant extra space.
 
 
 source: https://leetcode.com/problems/first-missing-positive/
+
+viewer python solution: https://www.codepile.net/pile/nyKq8wX9
